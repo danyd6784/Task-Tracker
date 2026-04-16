@@ -1,0 +1,20 @@
+{
+  "name": "task-tracker",
+  "version": "1.0.0",
+  "description": "Roadmap.sh backend developer beginner project",
+  "homepage": "https://github.com/danyd6784/Task-Tracker#readme",
+  "bugs": {
+    "url": "https://github.com/danyd6784/Task-Tracker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danyd6784/Task-Tracker.git"
+  },
+  "license": "ISC",
+  "author": "Dany \"Deitrik6\" De La Rosa",
+  "type": "module",
+  "main": "task-cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

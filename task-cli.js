@@ -1,7 +1,7 @@
-const fs = require("node:fs/promises");
-const taskFileName = ".\\tasks.json"
-import Task from ".\Task.mjs"
+import Task from "./Task.mjs"
+import TaskStorage from "./TaskStorage.mjs";
 
+const taskFile = new TaskStorage(".\\tasks.json")
 
 const allowedUtilityCommands = ["ADD", "UPDATE", "DELETE", "MARK-IN-PROGRESS", "MARK-DONE", "LIST"]
 const args = process.argv.slice(2);
@@ -16,7 +16,11 @@ try{
             
             switch (command) {
                 case "ADD":
-                    addTask(args[1], args[2]);
+                    let id = Number.parseInt(args[1]);
+                    console.log(Number.parseInt(id) > 0)
+                    let description = args[2]
+                    let task = new Task(id, description);
+                    taskFile.addTask(task);
                     break;
                 case "UPDATE":
                     break;
@@ -27,6 +31,7 @@ try{
                 case "MARK-DONE":
                     break;
                 case "LIST":
+                    console.table(await taskFile.getAllTasks())
                     break
                 default:
                     break;
@@ -39,34 +44,4 @@ try{
     }
 } catch(err){
     console.warn(err.message);
-}
-
-async function readTaskFile(){
-    try{
-        const fileData = await fs.readFile(taskFileName, "utf-8");
-        const taskList = JSON.parse(fileData);
-        console.log(taskList);
-        return taskList
-    } catch(err){
-        if (err.code === "ENOENT"){
-            console.log(`Error: ${taskFileName} does not exist. Please add a task to continue.`)
-        }else{
-            console.log(err.message)
-        }
-        return [];
-    }
-}
-
-async function addTask(id, description){
-    const taskList = await readTaskFile();
-    if (verifyTask(id, description)){
-        try{
-            let task = new Task(id, description);
-            taskList.push(task)
-            let add = await fs.writeFile(taskFileName, JSON.stringify(taskList));
-            if (add !== undefined) { throw new Error(`Something went wring adding the file to ${taskFileName}`)}
-        }catch(err){
-            console.log(err.message)
-        }
-    };
 }

@@ -23,7 +23,7 @@ export default class Task{
     #isValidTaskId(id){
         let isValid = true;
         //Task must be a positive integer greater than zero that is NOT undefined and not NaN
-        if ((typeof id !== "number" || !Number.isInteger(id) || Number.parseInt(id) > 0) &&
+        if ((typeof id !== "number" || !Number.isInteger(id) || Number.parseInt(id) < 1) &&
             (id !== NaN && id !== undefined)){
             isValid = false;
         }
