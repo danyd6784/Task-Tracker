@@ -1,5 +1,4 @@
 const fs = require("node:fs/promises");
-const { isNumberObject } = require("node:util/types");
 const taskFileName = ".\\tasks.json"
 
 //Define class for the tasks to set the shape of the objects that will be written to the JSON File
@@ -65,6 +64,15 @@ async function readTaskFile(){
         }
         return [];
     }
+}
+
+function isValidTaskId(id){
+    let isValid = true
+    //Task must be a positive integer greater than zero
+    if (typeof id !== "number" || !Number.isInteger(id) || Number.parseInt(id) > 0){
+        isValid = false
+    }
+    return isValid
 }
 
 function verifyTask(id, description){
