@@ -1,16 +1,7 @@
 const fs = require("node:fs/promises");
 const taskFileName = ".\\tasks.json"
+import Task from ".\Task.mjs"
 
-//Define class for the tasks to set the shape of the objects that will be written to the JSON File
-class Task{
-    constructor(id, desc){
-        this.id = id;
-        this.description = desc;
-        this.status = "todo";
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-    }
-}
 
 const allowedUtilityCommands = ["ADD", "UPDATE", "DELETE", "MARK-IN-PROGRESS", "MARK-DONE", "LIST"]
 const args = process.argv.slice(2);
@@ -64,41 +55,6 @@ async function readTaskFile(){
         }
         return [];
     }
-}
-
-function isValidTaskId(id){
-    let isValid = true
-    //Task must be a positive integer greater than zero
-    if (typeof id !== "number" || !Number.isInteger(id) || Number.parseInt(id) > 0){
-        isValid = false
-    }
-    return isValid
-}
-
-function verifyTask(id, description){
-    let isTaskValid = true;
-    let taskList = readTaskFile();
-    //Verify types
-    try {
-        let intID = Number.parseInt(id);
-        console.log(intID)
-        if (typeof description === "string" && intID !== NaN && typeof intID === "number"){
-            let index = 0;
-            let task = {};
-            while (isTaskValid === true && index < taskList.length){
-                task = taskList[index]
-                if (task.id == intID){
-                    isTaskValid = false
-                }
-                index++;
-            }
-        }else{
-            throw new Error("Description must be a text string");
-        }
-    } catch (error) {
-        console.log(error.message);
-    }
-    return isTaskValid;
 }
 
 async function addTask(id, description){
