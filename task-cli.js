@@ -1,4 +1,5 @@
 const fs = require("node:fs/promises");
+const { isNumberObject } = require("node:util/types");
 const taskFileName = ".\\tasks.json"
 
 //Define class for the tasks to set the shape of the objects that will be written to the JSON File
@@ -53,40 +54,52 @@ try{
 async function readTaskFile(){
     try{
         const fileData = await fs.readFile(taskFileName, "utf-8");
-        console.log(fileData);
+        const taskList = JSON.parse(fileData);
+        console.log(taskList);
+        return taskList
     } catch(err){
         if (err.code === "ENOENT"){
             console.log(`Error: ${taskFileName} does not exist. Please add a task to continue.`)
-            return undefined;
         }else{
             console.log(err.message)
         }
+        return [];
     }
 }
 
 function verifyTask(id, description){
-    let exists = false;
+    let isTaskValid = true;
+    let taskList = readTaskFile();
     //Verify types
-    if ((typeof id === "number" && Number.isInteger(id)) &&
-        typeof description === "string"){
-            const tasks = readTaskFile();
-            if (tasks !== undefined){
-                let index = 0;
-                while (exists === false){
-                    if (tasks[index].id === id){
-                        exists = true
-                    }
+    try {
+        let intID = Number.parseInt(id);
+        console.log(intID)
+        if (typeof description === "string" && intID !== NaN && typeof intID === "number"){
+            let index = 0;
+            let task = {};
+            while (isTaskValid === true && index < taskList.length){
+                task = taskList[index]
+                if (task.id == intID){
+                    isTaskValid = false
                 }
+                index++;
             }
+        }else{
+            throw new Error("Description must be a text string");
+        }
+    } catch (error) {
+        console.log(error.message);
     }
-    return !exists
+    return isTaskValid;
 }
 
 async function addTask(id, description){
+    const taskList = await readTaskFile();
     if (verifyTask(id, description)){
         try{
             let task = new Task(id, description);
-            let add = await fs.appendFile(taskFileName, JSON.stringify(task));
+            taskList.push(task)
+            let add = await fs.writeFile(taskFileName, JSON.stringify(taskList));
             if (add !== undefined) { throw new Error(`Something went wring adding the file to ${taskFileName}`)}
         }catch(err){
             console.log(err.message)
