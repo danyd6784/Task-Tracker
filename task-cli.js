@@ -6,6 +6,15 @@ const taskFile = new TaskStorage(".\\tasks.json")
 const allowedUtilityCommands = ["ADD", "UPDATE", "DELETE", "MARK-IN-PROGRESS", "MARK-DONE", "LIST"]
 const args = process.argv.slice(2); //Get the string array of commandline arguments
 
+//Locale and Timezone formatting function for the console output
+function formatDate(utcString){
+    const date = new Date(utcString);
+    return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "short",
+        timeStyle: "short"
+    }).format(date)
+}
+
 try{
     //normalize input and compare against array of allowed values
     let normalizedInput = args[0].toUpperCase()
@@ -61,7 +70,16 @@ try{
                 }
                 break;
             case "LIST":
-                console.table(await taskFile.getAllTasks())
+                const tasks = await taskFile.getAllTasks()
+                const displayTasks = tasks.map(task => ({
+                    id: task.id,
+                    description: task.description,
+                    status: task.status,
+                    createdAt: formatDate(task.createdAt),
+                    updatedAt: formatDate(task.updatedAt)
+
+                }))
+                console.table(displayTasks);
                 break
             default:
                 break;

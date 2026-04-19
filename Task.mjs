@@ -7,7 +7,7 @@ export default class Task{
         DONE: "done"
     }
 
-    constructor(id, desc, taskStatus = this.#statuses.TODO, createdDate = new Date(), updatedDate = new Date()){
+    constructor(id, desc, taskStatus = this.#statuses.TODO, createdDate = new Date().toISOString(), updatedDate = new Date().toISOString()){
         //ID VALIDATION
         this.id = this.#validateTaskID(id);
       
