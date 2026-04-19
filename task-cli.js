@@ -37,6 +37,12 @@ try{
                 }
                 break;
             case "DELETE":
+                try {
+                    id = Number(args[1]);
+                    await taskFile.deleteTask(id);
+                } catch (error) {
+                    console.log(error.message);
+                }
                 break;
             case "MARK-IN-PROGRESS":
                 break;
