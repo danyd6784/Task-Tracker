@@ -45,6 +45,12 @@ try{
                 }
                 break;
             case "MARK-IN-PROGRESS":
+                try {
+                    id = Number(args[1]);
+                    await taskFile.taskInProgress(id);
+                } catch (error) {
+                    console.log(error.message);
+                }
                 break;
             case "MARK-DONE":
                 break;

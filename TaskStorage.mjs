@@ -11,7 +11,7 @@ export default class TaskStorage {
             const data = await fs.readFile(this.filepath, "utf-8");
             const taskList = JSON.parse(data)
             return taskList.map((task) => {
-                return new Task(task.id, task.description, task.createdAt, task.updatedAt);
+                return new Task(task.id, task.description,task.status, task.createdAt, task.updatedAt);
             })
         } catch(err){
             //Handle when the file doesn't exist
@@ -101,6 +101,42 @@ export default class TaskStorage {
             await fs.writeFile(this.filepath, JSON.stringify(tasks, null, 2));
         }catch(error){
             throw new Error(`Error: Failed to delete task ${taskID}: ${error.message}`);
+        }
+    }
+
+    async taskInProgress(taskID){
+        try{
+            //Validate the taskID
+            //Test NaN and Undefined
+            const id = taskID
+            if (isNaN(id) || id === undefined || id === null){
+                throw new Error("Task ID must be a number");
+            }
+            //Test for integer
+            if (!Number.isInteger(id)){
+                throw new Error("Task ID must be an integer");
+            }
+            //Test for positive integer
+            if (id < 1){
+                throw new Error("Task ID must be a positive integer");
+            }
+
+            const tasks = await this.getAllTasks();
+            let taskFound = false
+            let index = 0;
+            while (!taskFound && index < tasks.length){
+                if (tasks[index].id === id){
+                    taskFound = true;
+                    tasks[index].markTaskInProgress();
+                }
+                index++;
+            }
+            if (!taskFound){
+                throw new Error("Task not found");
+            }
+            await fs.writeFile(this.filepath, JSON.stringify(tasks, null, 2));
+        }catch(error){
+            throw new Error(`Error: Failed to mark task ${taskID} in progress: ${error.message}`);
         }
     }
 }

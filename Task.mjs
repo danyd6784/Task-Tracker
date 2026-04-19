@@ -7,14 +7,14 @@ export default class Task{
         DONE: "done"
     }
 
-    constructor(id, desc, createdDate = new Date(), updatedDate = new Date()){
+    constructor(id, desc, taskStatus = this.#statuses.TODO, createdDate = new Date(), updatedDate = new Date()){
         //ID VALIDATION
         this.id = this.#validateTaskID(id);
       
         //DESCRIPTION VALIDATION
         this.description = this.#validateDescription(desc);
 
-        this.status = this.#statuses.TODO;
+        this.status = taskStatus;
         this.createdAt = createdDate;
         this.updatedAt = updatedDate;
     }
@@ -56,6 +56,10 @@ export default class Task{
     
     updateDescription(desc){
         this.description = this.#validateDescription(desc);
+        this.updatedAt = new Date();
+    }
+    markTaskInProgress(){
+        this.status = this.#statuses.IN_PROGRESS;
         this.updatedAt = new Date();
     }
 }
