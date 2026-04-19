@@ -58,8 +58,14 @@ export default class Task{
         this.description = this.#validateDescription(desc);
         this.updatedAt = new Date();
     }
+
     markTaskInProgress(){
         this.status = this.#statuses.IN_PROGRESS;
+        this.updatedAt = new Date();
+    }
+
+    markTaskDone(){
+        this.status = this.#statuses.DONE;
         this.updatedAt = new Date();
     }
 }

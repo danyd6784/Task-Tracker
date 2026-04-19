@@ -53,6 +53,12 @@ try{
                 }
                 break;
             case "MARK-DONE":
+                try {
+                    id = Number(args[1]);
+                    await taskFile.taskDone(id);
+                } catch (error) {
+                    console.log(error.message);
+                }
                 break;
             case "LIST":
                 console.table(await taskFile.getAllTasks())

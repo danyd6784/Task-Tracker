@@ -139,4 +139,40 @@ export default class TaskStorage {
             throw new Error(`Error: Failed to mark task ${taskID} in progress: ${error.message}`);
         }
     }
+
+    async taskDone(taskID){
+        try{
+            //Validate the taskID
+            //Test NaN and Undefined
+            const id = taskID
+            if (isNaN(id) || id === undefined || id === null){
+                throw new Error("Task ID must be a number");
+            }
+            //Test for integer
+            if (!Number.isInteger(id)){
+                throw new Error("Task ID must be an integer");
+            }
+            //Test for positive integer
+            if (id < 1){
+                throw new Error("Task ID must be a positive integer");
+            }
+
+            const tasks = await this.getAllTasks();
+            let taskFound = false
+            let index = 0;
+            while (!taskFound && index < tasks.length){
+                if (tasks[index].id === id){
+                    taskFound = true;
+                    tasks[index].markTaskDone();
+                }
+                index++;
+            }
+            if (!taskFound){
+                throw new Error("Task not found");
+            }
+            await fs.writeFile(this.filepath, JSON.stringify(tasks, null, 2));
+        }catch(error){
+            throw new Error(`Error: Failed to mark task ${taskID} done: ${error.message}`);
+        }
+    }
 }
