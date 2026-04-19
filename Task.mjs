@@ -1,41 +1,61 @@
 //Define class for the tasks to set the shape of the objects that will be written to the JSON File
 export default class Task{
-    constructor(id, desc){
+    //Simulated enumerated data types 
+    #statuses = {
+        TODO: "todo",
+        IN_PROGRESS: "in-progress",
+        DONE: "done"
+    }
+
+    constructor(id, desc, createdDate = new Date(), updatedDate = new Date()){
         //ID VALIDATION
-        if (this.#isValidTaskId(id)){
-            this.id = id;
-        } else{
-            throw new Error("Error:Task ID must be an integer value. Please enter an integer for the task id.");
-        }
-
+        this.id = this.#validateTaskID(id);
+      
         //DESCRIPTION VALIDATION
-        if (this.#isValidDescription(desc)){
-            this.description = desc;
-        } else{
-            throw new Error("Error:Task description must be an non-empty string. Please enter an valid task description.");
-        }
-        this.status = "todo";
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-    }
+        this.description = this.#validateDescription(desc);
 
+        this.status = this.#statuses.TODO;
+        this.createdAt = createdDate;
+        this.updatedAt = updatedDate;
+    }
+    
     //Task should own it's own validation.
-    #isValidTaskId(id){
-        let isValid = true;
-        //Task must be a positive integer greater than zero that is NOT undefined and not NaN
-        if ((typeof id !== "number" || !Number.isInteger(id) || Number.parseInt(id) < 1) &&
-            (id !== NaN && id !== undefined)){
-            isValid = false;
-        }
-        return isValid;
-    }
+    #validateTaskID(taskID){
+        const id = Number(taskID);
 
-    #isValidDescription(description){
-        let isValid = true;
-        //description MUST be a non-empty string
-        if (typeof description !== "string" || description.length < 1){
-            isValid = false;
+        //Test NaN and Undefined
+        if (isNaN(id) || id === undefined || id === null){
+            throw new Error("Task ID must be a number");
         }
-        return isValid;
+        //Test for integer
+        if (!Number.isInteger(id)){
+            throw new Error("Task ID must be an integer");
+        }
+        //Test for positive integer
+        if (id < 1){
+            throw new Error("Task ID must be a positive integer");
+        }
+        
+        return id;
+    }
+    
+    #validateDescription(taskDesc){
+        //description MUST be a non-empty string
+        if (taskDesc === undefined || taskDesc === null){
+            throw new Error("Task description is required")
+        }
+        if (typeof taskDesc !== "string"){
+            throw new Error("Task description mustmust be a string")
+        }
+        //Task description cannot be empty space
+        if (taskDesc.trim().length === 0){
+            throw new Error("Task description cannot be empty")
+        }
+        return taskDesc;
+    }
+    
+    updateDescription(desc){
+        this.description = this.#validateDescription(desc);
+        this.updatedAt = new Date();
     }
 }
