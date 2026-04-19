@@ -52,12 +52,15 @@ export default class TaskStorage {
             const tasks = await this.getAllTasks();
             let taskFound = false
             let index = 0;
-            while (!taskFound){
+            while (!taskFound && index < tasks.length){
                 if (tasks[index].id === taskID){
                     taskFound = true;
                     tasks[index].updateDescription(updatedDescription);
                 }
                 index++;
+            }
+            if (!taskFound){
+                throw new Error("Task not found");
             }
             await fs.writeFile(this.filepath, JSON.stringify(tasks, null, 2));
         }catch(error){
